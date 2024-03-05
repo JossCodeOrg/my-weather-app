@@ -1,51 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="src/styles.css" />
-    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
-    <title>My weather application</title>
-  </head>
-  <body>
-    <div class="principal">
-      <header>
-        <form id="city-form">
-          <input
-            type="search"
-            placeholder="Enter a city.."
-            required
-            class="search-input"
-            id="search-text"
-          />
-          <input type="submit" value="Search" class="search-button" />
-        </form>
-      </header>
-      <main>
-        <div class="current-weather">
-          <div>
-            <h1 id="city">Paris</h1>
-            <p>
-              <span id="current-info"></span>, moderate rain <br />
-              Humidity: <strong>87%</strong>, Wind: <strong>7.2km/h</strong>
-            </p>
-          </div>
-          <div class="temperature">
-            <span class="temperature-emoji">☀️</span>
-            <span class="temperature-number">24</span>
-            <span class="temperature-degree"> °C </span>
-          </div>
-        </div>
-      </main>
-      <footer>
-        <p>
-          This project was coded by
-          <a href="#" target="_blank">Josselyn Morales</a> and is
-          <a href="#" target="_blank"> on GitHub</a> and
-          <a href="#" target="_blank">hosted on Netlify</a>
-        </p>
-      </footer>
-    </div>
-    <script src="src/script.js"></script>
-  </body>
-</html>
+let now = new Date();
+
+let hour = now.getHours();
+let minute = now.getMinutes();
+
+let days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+let day = days[now.getDay()];
+
+let p = document.querySelector("#current-info");
+p.innerHTML = `${day} ${hour}:${minute}`;
+
+function search(event) {
+  event.preventDefault();
+  let searchInput = document.querySelector("#search-text");
+  let city = searchInput.value;
+  let h1 = document.querySelector("h1");
+  h1.innerHTML = `${searchInput.value}`;
+  let apiKey = "628atfa04eb144c5fo14f703eb967e76";
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayTemperature);
+}
+
+function displayTemperature(response) {
+  let temperature = Math.round(response.data.temperature.current);
+  let span = document.querySelector(".temperature-number");
+  span.innerHTML = temperature;
+}
+
+let form = document.querySelector("#city-form");
+form.addEventListener("submit", search);
